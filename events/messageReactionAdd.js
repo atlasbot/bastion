@@ -26,6 +26,7 @@ module.exports = class Event {
 			const content = embed.description;
 
 			if (emoji.name === '✅') {
+				msg.removeReactions().catch(() => false);
 				const suggestionChannel = msg.channel.guild.channels.get(process.env.SUGGESTION_CHANNEL);
 
 				const smsg = await suggestionChannel.createMessage({
@@ -43,6 +44,7 @@ module.exports = class Event {
 				await smsg.addReaction(process.env.SUGGESTION_EMOJI_DOWN);
 
 				embed.footer.text = 'approved';
+				embed.color = 3066993;
 				msg.edit({
 					content: `Approved by <@${userID}> at ${(new Date()).toLocaleDateString()}`,
 					embed,
@@ -52,10 +54,11 @@ module.exports = class Event {
 					const dmChannel = await member.user.getDMChannel();
 					await dmChannel.createMessage({
 						embed: {
+							color: 3066993,
 							title: 'Suggestion Approved',
 							description: `Your suggestion ("${content.substring(0, 64)}"...) has been approved by the staff team and can now be voted on. 
                             
-                            This does mean your suggestion is being added just yet, it just means users can now vote on whether or not they want it added.
+                            This doesn't mean your suggestion is being added just yet, it just means users can now vote on whether or not they want it added.
                             
                             You can view your suggestion in the <#${suggestionChannel.id}> channel.`,
 							timestamp: new Date(),
@@ -63,7 +66,10 @@ module.exports = class Event {
 					});
 				}
 			} else if (emoji.name === '❌') {
+				msg.removeReactions().catch(() => false);
+
 				embed.footer.text = 'denied';
+				embed.color = 15158332;
 				msg.edit({
 					content: `Denied by <@${userID}> at ${(new Date()).toLocaleDateString()}`,
 					embed,
@@ -73,6 +79,7 @@ module.exports = class Event {
 					const dmChannel = await member.user.getDMChannel();
 					await dmChannel.createMessage({
 						embed: {
+							color: 15158332,
 							title: 'Suggestion Denied',
 							description: `Your suggestion ("${content.substring(0, 64)}"...) has been denied by the staff team. 
                             

@@ -28,16 +28,24 @@ module.exports = class Event {
 
 			await msg.delete();
 
-			const dmChannel = await msg.author.getDMChannel();
-			await dmChannel.createMessage({
-				embed: {
-					title: 'Suggestion Pending Approval',
-					description: `Your suggestion ("${content.substring(0, 64)}"...) is now pending approval. 
+			try {
+				const dmChannel = await msg.author.getDMChannel();
+				await dmChannel.createMessage({
+					embed: {
+						title: 'Suggestion Pending Approval',
+						description: `Your suggestion ("${content.substring(0, 64)}"...) is now pending approval. 
 					
 					If the staff team approves it, your suggestion will be voted on. If your suggestion gets enough votes, it could be added to Atlas.`,
-					timestamp: new Date(),
-				},
-			});
+						timestamp: new Date(),
+					},
+				});
+			} catch (e) {
+				const fallback = await msg.channel.createMessage({
+					content: `${msg.author.mention}, your suggestion is now awaiting approval. If approved, it'll be put up for users to vote on. You may want to open your DMs so you can get notified when your suggestion is approved or denied.`,
+				});
+
+				setTimeout(() => fallback.delete(), 30 * 1000);
+			}
 		}
 	}
 };
