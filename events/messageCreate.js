@@ -7,6 +7,9 @@ module.exports = class Event {
 		if (msg.type === 0 && !msg.author.bot && msg.channel.guild && msg.channel.id === process.env.SUGGESTION_CHANNEL) {
 			const { content } = msg;
 			const verifyChannel = msg.channel.guild.channels.get(process.env.VERIFY_CHANNEL);
+
+			await msg.delete();
+
 			const smsg = await verifyChannel.createMessage({
 				embed: {
 					title: 'New Suggestion',
@@ -25,8 +28,6 @@ module.exports = class Event {
 
 			await smsg.addReaction('✅');
 			await smsg.addReaction('❌');
-
-			await msg.delete();
 
 			try {
 				const dmChannel = await msg.author.getDMChannel();
